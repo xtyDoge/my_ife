@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>任务1</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {font-family: "Micosoft YaHei";font-size: 14px;}
+			.tip {display: inline;margin-left: 30px;font-size: 14px;color: #ccc;}
+			.guide{display: inline-block;margin-right: 10px;text-align: right;}
+			li {display: block;height: 100px;width: 800px;position: relative;}
+			input {display: inline-block;margin-left: 100px;margin-top: 20px;margin-bottom: 20px;border: 1px solid #ccc;border-radius: 2px;font-size: 20px;}
+			.constr {position: absolute;left: 20%;right: 20%;top: 20%;bottom: 20%;border: 1px solid #ccc;border-radius: 10px;min-width: 700px;}
+			.input-box {position: absolute;bottom: 0px;top: 0px;left: 0px;right: 0px;}
+			button {background:#347ab7;border-radius: 5px;height: 60px;width: 100px;color: #fff;border: 1px solid blue;font-size: 20px;position:absolute;right: 200px;}
+
+		</style>
+		<script src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script>
+	</head>
+	<body>
+		<div class="routine" style = "display:none">
+			1.规划静态HTML表单结构
+			2.动态功能检测
+			3 500 x 66 100 x 60	
+			dd1124 red  854972 gree
+			 #a7a7a7
+			4.ERROR！变化时字体更新颜色总是不对？出现一个奇怪的紫色
+		</div>
+
+
+
+		<div class="constr">
+				<ul class="input-box">
+					<li><span class="guide">名称</span><input type="text" class="in username"><span class="tip username">请输入用户名，4~16个字符</span></li>
+					<li><span class="guide">密码</span><input type="text" class="in password"><span class="tip password">请输入密码</span></li>
+					<li><span class="guide">E-Mail</span><input type="text" class="in email"><span class="tip email">请输入常用电子邮箱</span></li>
+					<li><button class="submit-btn">注册</button></li>
+				</ul>
+		</div>
+	</body>
+	<script type="text/javascript">
+	(function(){
+
+		var getStrLen = function(str){
+        var enLen = 0;
+        var zhLen = 0;
+        for (let ch of str) {
+            if (isASCII(ch))
+                enLen++;
+            else 
+                zhLen++;
+        } 
+        return enLen + zhLen * 2;  
+		};
+
+		var isASCII = function(c) {
+        return c.codePointAt(0) <= 0xFF;
+		};
+
+
+		 var isUsernameCorr = function(username){
+		 	var len = getStrLen(username);
+		 	if (len >= 4 && len <= 16) {
+		 		return true;
+		 	}
+		 	else {
+		 		return false;
+		 	}
+		 };
+
+		 var renderErrorTip = function(username){
+		 	if (isUsernameCorr(username)) {
+		 		$(".in.username").css("border-color","LightGreen");
+		 		$(".tip.username").css("color","LightGreen");
+		 		$(".tip.username").html("用户名正确");
+		 	}
+		 	else {
+		 		$(".in.username").css("border-color","red");
+		 		$(".tip.username").css("color","red");
+		 		$(".tip.username").html("用户名长度应为4~16个字符");	
+		 	}
+		 };
+
+
+		$(".username.in").on("change",function() {
+			renderErrorTip(this.value.toString());
+			console.log("username checked: " + isUsernameCorr(this.value.toString()));
+		});
+
+	})();
+
+
+	</script>
+</html>

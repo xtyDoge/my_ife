@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>任务2</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			
+			/* 重构后的新内容 */
+			body {padding: 0px;margin: 0px;font-family: "Microsoft YaHei";}
+			.header{width:100%;height: 50px;background: #be3948;line-height: 50px;font-size: 20px;color: #fff;padding-left: 20px;margin: 0;}
+			.middle{width: 800px;margin:0 auto;padding-top: 100px;}
+			.content{display: block;}
+			.content tr td{margin-right: 10px;display: inline-block;text-align:right;}
+			.username,.password,.email,.password-confirm,.mobilephone{margin-top: 20px;display: block;height: 40px;}
+			.title{width: 100px;font-size: 16px;}
+			.input-box{width: 300px;margin-left: 10px;}
+			.input-box>input{width: 300px;font-size: 14px;height: 20px;line-height: 14px;vertical-align: center;border: 1px solid #ccc;border-radius: 3px;height: 40px;}
+			.tips{color: #a9a9a9;font-size: 14px;margin-left: 50px;}
+			.submit .tips{margin-top: 50px;margin-left: -100px;}
+			.submit button{height: 40px;width: 100px;border-radius: 5px;border: 1px solid #a6c1d7;background: #347ab7;font-size: 18px;color: #ffffff;text-align: center;}
+
+			.icon-tick{background: url(img/Tick_48px_1118976_easyicon.net.png) no-repeat;width: 14px;height: 14px;background-size: contain;position: absolute;margin-left: -20px;}
+			.icon-cross{background: url(img/cross_512px_1175749_easyicon.net.png) no-repeat;width: 14px;height: 14px;background-size: contain;position: absolute;margin-left: -20px;margin-top: 3px;}
+			.tips.right-input{color: #3bb327;}
+			.tips.wrong-input{color: #f61157;}
+
+			.input-box>input.right-input{border:1px solid #bde4b4;color: #3bb327;}
+			.input-box>input.wrong-input{border-color:#fbe1e4;}
+		</style>
+		<script src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script>
+	</head>
+	<body>
+		<div class="zhidao" style = "display:none">
+			第一个背板写的完整网页，撒花~
+
+			验证变化的方法：
+			1.通过给DOM元素增、减class来完成变化，事先写好css 可能遇到一些css选择器优先度的问题 例如tag>的就很优先
+			2.通过写好DOM 然后show或者hide来完成 hide之后dom可以看做不存在 对布局没有任何影响
+			3.直接调用jquery的CSS方法来修改 好像很吃移动端的性能
+
+			表单的写法：
+			利用了表格 左边文字对齐采用float left 右边标志采用absolute加margin 不需要弄父元素
+			input是个烦人的东西 高度宽度字体等等都需要自己弄
+
+			unfixed:
+			1.代码复用极其糟糕 大段大段的重复代码 需要想个办法复用 稍后改进
+			2.对class的操作似乎很糟糕 命名混乱 应该统一一个命名方式
+		</div>
+		<div class="constr">
+
+			<div class="header">
+				注册
+			</div>
+
+			<table class="middle">
+				<tbody class="content">
+					<tr class="username">
+						<td class="title">名   &nbsp&nbsp&nbsp&nbsp&nbsp字：</td>
+						<td class="input-box"><input type="text" name="username" class="username-in"></td>
+						<td class="tips no-input" style = "display:none">请输入用户名</td>
+						<td class="tips right-input" style = "display:none"><span class="icon-tick"></span>输入正确</td>
+						<td class="tips wrong-input"  style = "display:none"><span class="icon-cross"></span>输入格式不正确！</td>
+					</tr>
+
+					<tr class="password">
+						<td class="title">密  &nbsp&nbsp&nbsp&nbsp&nbsp码：</td>
+						<td class="input-box"><input type="password" name="password" class="password-in"></td>
+						<td class="tips no-input" style = "display:none">请输入密码,4~16个字符</td>
+						<td class="tips right-input" style = "display:none"><span class="icon-tick"></span>输入正确</td>
+						<td class="tips wrong-input" style = "display:none"><span class="icon-cross"></span>输入格式不正确！</td>
+					</tr>
+
+					<tr class="password-confirm">
+						<td class="title">密码确认：</td>
+						<td class="input-box"><input type="password" name="password-confirm" class="password-confirm-in"></td>
+						<td class="tips no-input" style = "display:none">请再次输入密码</td>
+						<td class="tips right-input" style = "display:none"><span class="icon-tick"></span>输入正确</td>
+						<td class="tips wrong-input" style = "display:none"><span class="icon-cross"></span>和上次输入的不一样！</td>
+					</tr>
+
+					<tr class="email">
+						<td class="title">邮 &nbsp&nbsp&nbsp&nbsp&nbsp箱：</td>
+						<td class="input-box"><input type="text" name="email" class="email-in"></td>
+						<td class="tips no-input" style = "display:none">请输入电子邮箱</td>
+						<td class="tips right-input" style = "display:none"><span class="icon-tick"></span>输入正确</td>
+						<td class="tips wrong-input" style = "display:none"><span class="icon-cross"></span>邮箱格式错误！</td>
+					</tr>
+
+					<tr class="mobilephone">
+						<td class="title">手 &nbsp&nbsp&nbsp&nbsp&nbsp机：</td>
+						<td class="input-box"><input type="text" name="mobilephone" class="mobilephone-in"></td>
+						<td class="tips no-input" style = "display:none">请输入电话号码</td>
+						<td class="tips right-input" style = "display:none"><span class="icon-tick"></span>输入正确</td>
+						<td class="tips wrong-input" style = "display:none"><span class="icon-cross"></span>电话格式错误</td>
+					</tr>
+
+					<tr class="submit">
+						<td class="title">&nbsp&nbsp</td>
+						<td class="input-box">&nbsp</td>
+						<td class="tips"><button class="submit-btn">提交</button></td>
+					</tr>
+
+				</tbody>
+
+			</table>
+
+
+
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+	(function(){
+		//获取DOM节点
+		var DOM = {
+			usernameIn:$('input[name="username"]'),
+			passwordIn:$('input[name="password"]'),
+			passwordConfirmIn:$('input[name="password-confirm"]'),
+			emailIn:$('input[name="email"]'),
+			mobilephoneIn:$('input[name="mobilephone"]'),
+			submit_btn:$(".submit-btn")
+		};
+
+		//检测长度
+		var getStrLen = function(str){
+			var enLen = 0;
+			var zhLen = 0;
+			for (let ch of str) {
+				if (isASCII(ch))
+					enLen++;
+				else
+					zhLen++;
+			}
+			return enLen + zhLen * 2;
+		};
+					
+		var isASCII = function(c) {
+			return c.codePointAt(0) <= 0xFF;
+		};
+
+		var isNum = function(c) {
+			return c.codePointAt(0) <= 57 && c.codePointAt(0) >= 48;
+		};
+	
+		//判断输入对错
+		var Status = {
+			username : function(username){
+				var len = getStrLen(username);
+				if (len == 0) {
+					return "None";
+				}
+				if (len >= 4 && len <= 16) {
+					return "Right";
+				}
+				else {
+					return "Wrong";
+				}},
+
+			password : function(password){
+				if (getStrLen(password)  == 0) {
+					return "None";
+				}
+
+				var len = getStrLen(password);
+				if (len >= 4 && len <= 16) {
+					return "Right";
+				}
+				else {
+					return "Wrong";
+				}},
+
+			password_confirm : function(password_confirm){
+				if (getStrLen(password_confirm)  == 0) {
+					return "None";
+				}
+				var password_origin = DOM.passwordIn.val();
+				if (password_confirm == password_origin) {
+					return "Right";
+				}
+				else {
+					return "Wrong";
+				}
+			},
+
+			email : function(email){
+				var reg = /^[0-9a-zA-Z\_]*@[0-9a-zA-Z\_\.]*\.[0-9a-zA-Z]*$/;
+				if (getStrLen(email) == 0) {
+					return "None";
+				}
+				if (reg.test(email)) {
+					return "Right";
+				}
+				else {
+					return "Wrong";
+				}
+				
+			},
+
+			mobilephone : function(mobilephone){
+				if (getStrLen(mobilephone) == 0) {
+					return "None";
+				}
+				var len = 0;
+				for (let ch of mobilephone) {
+					if (isNum(ch)) {
+						len ++;
+					}
+					else{
+						return "Wrong";
+					}
+				}
+
+				if (len == 11) {
+					return "Right";
+				}
+				else{
+					return "Wrong";
+				}
+
+			}
+		};
+		//渲染DOM
+
+		var toOrigin = function(_dom,dom){
+				dom.removeClass("right-input").removeClass("wrong-input");
+				$("."+ _dom +" .tips.no-input").show();
+				$("."+ _dom +" .tips.right-input").hide();
+				$("."+ _dom +" .tips.wrong-input").hide();
+		};
+
+		//用户名
+		var renderUsername = function(_content){
+			//边框（类） 提示 (show)
+			if (Status.username(_content) == "Right") {
+				DOM.usernameIn.addClass("right-input").removeClass("wrong-input");
+				$(".username .tips.right-input").show();
+				$(".username .tips.no-input").hide();
+				$(".username .tips.wrong-input").hide();
+			}
+
+			if (Status.username(_content) == "Wrong" || Status.username(_content) == "None" ) {
+				DOM.usernameIn.addClass("wrong-input").removeClass("right-input");
+				$(".username .tips.wrong-input").show();
+				$(".username .tips.no-input").hide();
+				$(".username .tips.right-input").hide();
+			}
+		};
+		//密码
+
+		var renderPassword = function(_content){
+			//边框（类） 提示 (show)
+			if (Status.password(_content) == "Right") {
+				DOM.passwordIn.addClass("right-input").removeClass("wrong-input");
+				$(".password .tips.right-input").show();
+				$(".password .tips.no-input").hide();
+				$(".password .tips.wrong-input").hide();
+			}
+
+			if (Status.password(_content) == "Wrong" || Status.password(_content) == "None" ) {
+				DOM.passwordIn.addClass("wrong-input").removeClass("right-input");
+				$(".password .tips.wrong-input").show();
+				$(".password .tips.no-input").hide();
+				$(".password .tips.right-input").hide();
+			}
+		};
+		//再次输入密码
+		var renderPasswordConfirm = function(_content){
+			//边框（类） 提示 (show)
+			if (Status.password_confirm(_content) == "Right") {
+				DOM.passwordConfirmIn.addClass("right-input").removeClass("wrong-input");
+				$(".password-confirm .tips.right-input").show();
+				$(".password-confirm .tips.no-input").hide();
+				$(".password-confirm .tips.wrong-input").hide();
+			}
+
+			if (Status.password_confirm(_content) == "Wrong" || Status.password_confirm(_content) == "None" ) {
+				DOM.passwordConfirmIn.addClass("wrong-input").removeClass("right-input");
+				$(".password-confirm .tips.wrong-input").show();
+				$(".password-confirm .tips.no-input").hide();
+				$(".password-confirm .tips.right-input").hide();
+			}
+		};
+
+		//邮箱
+
+		var renderEmail = function(_content){
+			//边框（类） 提示 (show)
+			if (Status.email(_content) == "Right") {
+				DOM.emailIn.addClass("right-input").removeClass("wrong-input");
+				$(".email .tips.right-input").show();
+				$(".email .tips.no-input").hide();
+				$(".email .tips.wrong-input").hide();
+			}
+
+			if (Status.email(_content) == "Wrong" || Status.email(_content) == "None" ) {
+				DOM.emailIn.addClass("wrong-input").removeClass("right-input");
+				$(".email .tips.wrong-input").show();
+				$(".email .tips.no-input").hide();
+				$(".email .tips.right-input").hide();
+			}
+		}
+
+		//电话
+		var renderTele = function(_content){
+			//边框（类） 提示 (show)
+			if (Status.mobilephone(_content) == "Right") {
+				DOM.mobilephoneIn.addClass("right-input").removeClass("wrong-input");
+				$(".mobilephone .tips.right-input").show();
+				$(".mobilephone .tips.no-input").hide();
+				$(".mobilephone .tips.wrong-input").hide();
+			}
+
+			if (Status.mobilephone(_content) == "Wrong" || Status.mobilephone(_content) == "None" ) {
+				DOM.mobilephoneIn.addClass("wrong-input").removeClass("right-input");
+				$(".mobilephone .tips.wrong-input").show();
+				$(".mobilephone .tips.no-input").hide();
+				$(".mobilephone .tips.right-input").hide();
+			}
+		}
+
+		var init = function(){
+			DOM.usernameIn.focus(function(){
+				toOrigin("username",DOM.usernameIn);
+			});
+			DOM.usernameIn.blur(function(){
+				renderUsername(DOM.usernameIn.val());
+			});
+
+
+			DOM.passwordIn.focus(function(){
+				toOrigin("password",DOM.passwordIn);
+			});
+			DOM.passwordIn.blur(function(){
+				renderPassword(DOM.passwordIn.val());
+			});
+
+
+			DOM.passwordConfirmIn.focus(function(){
+				toOrigin("password-confirm",DOM.passwordConfirmIn);
+			});
+			DOM.passwordConfirmIn.blur(function(){
+				renderPasswordConfirm(DOM.passwordConfirmIn.val());
+			});
+
+
+
+			DOM.mobilephoneIn.focus(function(){
+				toOrigin("mobilephone",DOM.mobilephoneIn);
+			});
+			DOM.mobilephoneIn.blur(function(){
+				renderTele(DOM.mobilephoneIn.val());
+			});
+
+
+			DOM.emailIn.focus(function(){
+				toOrigin("email",DOM.emailIn);
+			});
+			DOM.emailIn.blur(function(){
+				renderEmail(DOM.emailIn.val());
+			});
+
+
+			DOM.submit_btn.on("click",function(){
+				renderUsername(DOM.usernameIn.val());
+				renderPassword(DOM.passwordIn.val());
+				renderPasswordConfirm(DOM.passwordConfirmIn.val());
+				renderTele(DOM.mobilephoneIn.val());
+				renderEmail(DOM.emailIn.val());
+			});
+		};
+
+		init();
+
+	})();
+
+
+
+	// 	var renderErrorTip = function(username){
+	// 		if (isUsernameCorr(username)) {
+	// 			$(".in.username").css("border-color","LightGreen");
+	// 			$(".tip.username").css("color","LightGreen");
+	// 			$(".tip.username").html("用户名正确");
+	// 		}
+	// 		else {
+	// 			$(".in.username").css("border-color","red");
+	// 			$(".tip.username").css("color","red");
+	// 				$(".tip.username").html("用户名长度应为4~16个字符");
+	// 		}
+	// 	};
+	// 	$(".username.in").on("change",function() {
+	// 		renderErrorTip(this.value.toString());
+	// 		console.log("username checked: " + isUsernameCorr(this.value.toString()));
+	// 	});
+	// })();
+	</script>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>任务3</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			
+			/* 重构后的新内容 */
+			body {padding: 0px;margin: 0px;font-family: "Microsoft-Yahei";}
+			td{margin-bottom:50px;display: inline-block;float: left;width: 33%;height: 50px;}
+			.header{width:100%;height: 50px;background: #be3948;line-height: 50px;font-size: 20px;color: #fff;padding-left: 20px;margin: 0;}
+			.middle{width: 800px;margin:0 auto;padding-top: 100px;}
+			.content{display: block;}
+
+			tr {display: block;width: 100%;height: 40px;}
+			.option-box{font-size: 20px;}
+			.option-box>td{float: left;width: 33%;letter-spacing:1px;color: #282828;font-weight:300;font-family: "Microsoft-Yahei";}
+			.option-box>td>input{height: 20px;margin-right: 10px;}
+			.title{display: inline-block;height: 100%;width: 100%;text-align: right;margin-left: -30px;}
+			.city,.university{height: 50%;width: 80%;border: 1px solid #e9e8e8;background: #fff;}
+			.company {display: inline-block;height: 50%;width: 160%;border: 1px solid #e9e8e8;border-radius: 3px;}
+			.submit button{height: 40px;width: 100px;border-radius: 5px;border: 1px solid #a6c1d7;background: #347ab7;font-size: 18px;color: #ffffff;text-align: center;}
+		</style>
+		<script src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script>
+	</head>
+	<body>
+		<div class="zhidao" style = "display:none">
+			1.思路 当选择北京时 隐藏学校中所有的option选项 再show所有北京学校
+				弄一个函数，输入为DOM 直接渲染增加隐藏类
+			2.或者能不能直接用Array存好，选择好的时候现场加入option中
+		</div>
+		<div class="constr">
+
+			<div class="header">
+				信息输入
+			</div>
+
+			<table class="middle">
+				<tbody class="content">
+
+					<tr class="option-box">
+						<td>&nbsp</td>
+						<td><input type="radio" name="identify" value="student"><span class="describe">在校生</span></td>
+						<td><input type="radio" name="identify" value="socialist"><span class="describe">非在校生</span></td>
+					</tr>
+
+
+					<tr class="worker" style="display:none">
+						<td><span class="title">工作单位</span></td>
+						<td><input type="text" name="company" class="company" required="required" placeholder="请填写您的工作单位"></input></td>	
+					</tr>
+
+					<tr class="student" style = "display:none">
+						<td><span class="title">学校</span></td>
+						<td class="select-box">
+							<select class="city">
+								<option class="NON">--请选择城市--</option>
+								<option class="PEK">北京</option>
+								<option class="SHA">上海</option>
+								<option class="TYO">东京</option>
+							</select>
+						</td>
+
+						<td class="select-box">
+							<select class="university">
+								<option class="NON">--请选择学校--</option>
+								<option class="PEK" style="display:none">北京大学</option>
+								<option class="PEK" style="display:none">北京邮电大学</option>
+								<option class="PEK" style="display:none">清华大学</option>
+								<option class="PEK" style="display:none">对外经贸大学</option>
+								<option class="SHA" style="display:none">复旦大学</option>
+								<option class="SHA" style="display:none">同济大学</option>
+								<option class="SHA" style="display:none">华东师范大学</option>
+								<option class="TYO" style="display:none">东京大学</option>
+								<option class="TYO" style="display:none">早稻田大学</option>
+								<option class="TYO" style="display:none">庆应义塾大学</option>
+								<option class="TYO" style="display:none">法政大学</option>
+							</select>
+						</td>
+					</tr>
+
+					<tr class="submit" style="display:none">
+						<td>&nbsp&nbsp</td>
+						<td>&nbsp</td>
+						<td class="zhanweifu" style="dispaly:none">&nbsp</td>
+						<td class="tips"><button class="submit-btn">提交</button></td>
+					</tr>
+
+					
+				</tbody>
+
+			</table>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		(function(){
+			var DOM = {
+				identify:$('input[name="identify"]'),
+				student:$('.student'),
+				worker:$('.worker'),
+				company:$('.company'),
+				city:$('.city'),
+				university:$(".university")
+			};
+
+			//全局变量 身份
+			var IDENTIFY = "";
+
+			//方法 根据城市判断大学 用class来判断
+
+			var findUniversity = function(city_dom,school_dom){
+				var schools = school_dom.children();
+				var city = city_dom.find("option:selected").attr("class");
+				console.log(city);
+				schools.hide();
+				schools.each(function(){
+					$(this).hide();
+					if ($(this).attr("class") == city) {
+						$(this).show();
+					}
+				});
+			};
+
+			//获取最终选择的信息
+
+			var getInfo = function(){
+
+				var info = "";
+				info = "您是" + $("input[name='identify']:checked").next().text();
+
+				(IDENTIFY == "student") ? info += "，学校是" + DOM.university.find("option:selected").text()+"。": info += "，单位是"  + DOM.company.val() + "。";
+
+				return info;
+			};
+
+			//具体的渲染
+
+			DOM.identify.on("click",function(){
+				if ($("input[name='identify']:checked").val() == "socialist") {
+					DOM.student.hide();
+					DOM.worker.show();
+					//控制格式的空格
+					$(".zhanweifu").show();
+					IDENTIFY = "socialist";
+				}
+				if ($("input[name='identify']:checked").val() == "student") {
+					DOM.student.show();
+					DOM.worker.hide();
+					//控制格式的空格
+					$(".zhanweifu").hide();
+					IDENTIFY = "student";
+				}
+
+				$(".submit").show();
+			});
+
+			DOM.city.on("change",function(){
+				findUniversity(DOM.city,DOM.university);
+			});
+
+			$(".submit-btn").on("click",function(){
+				alert(getInfo());
+			});
+
+
+		})();
+	</script>
+</html>

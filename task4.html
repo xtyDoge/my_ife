@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>任务4会动的小方块</title>
+		<meta charset="utf-8">
+		<style type="text/css" media="screen">
+			body{margin: 0px;}
+			.map{margin: 0 auto;margin-top: 100px;height: 500px;width: 500px;border: 2px solid #3c3c3c;}
+			.map .row{width: 100%;height: 10%;}
+			.map .col{display: inline-block;height: 100%;width: 10%;margin-right: 0px;float: left;position: relative;box-sizing: border-box;}
+			.dash{margin:0 auto;width: 500px;text-align: center;margin-top: 30px;}
+
+			/* 本来伪类是在父元素内 本元素的前后 用absolute大法弄成了完美贴合本元素 上面的写法*/
+			/* 不能用伪类！Jquery没法选择伪类 只好用伪类做边框 用empty方法来增加删除div（2个）来表现图像 */
+
+			.col:after{content:"";display: inline-block;position: absolute;left:0px;right:0px;top: 0px;bottom: 0px;border:1px solid #ccc;border-top: 0px;border-left: 0px;}
+
+			/* 蓝色色块 */
+			.col>.orientation{display: inline-block;position: absolute;left:0px;right:0px;top: 0px;bottom: 0px;z-index: 1;background: #0001fd;}
+			.col>.left{right: 35px;}
+			.col>.right{left: 35px;}
+			.col>.top{bottom: 35px;}
+			.col>.bottom{top: 35px;}
+
+			/* 边界 js添加*/
+			.header-row{text-align: center;font-size: 14px;font-family: Microsoft Yahei;line-height: 50px;position: absolute;left: 0px;right: 25px;top: 0px;bottom: 0px;margin-left: -50px;}
+			.header-col{text-align: center;font-size: 14px;font-family: Microsoft Yahei;line-height: 25px;position: absolute;left: 0px;right: 0px;top: 0px;bottom: 25px;margin-top: -25px;}
+
+		</style>
+		<script src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script>
+	</head>
+	<body>
+
+		<div style="display:none">
+			独立完成的MVC设计模式
+			1.M 面向对象的Square类 封装的纯数据方法
+			2 V 根据数据渲染DOM
+			3 C 控制台 操纵数据 而不是操纵DOM
+
+			遇到的问题
+			1.不能用jQuery操作伪类！
+		</div>
+
+		<div class="map">
+
+			<div class="row">
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+			</div>
+
+			<div class="row">
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+			</div>
+
+			<div class="row">
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+			</div>
+
+			<div class="row">
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+			</div>
+
+			<div class="row">
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+			</div>
+
+			<div class="row">
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+			</div>
+
+			<div class="row">
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+			</div>
+
+			<div class="row">
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+			</div>
+
+			<div class="row">
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+			</div>
+
+			<div class="row">
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+				<div class="col">&nbsp</div>
+			</div>
+
+		</div>
+
+		<div class="dash">
+			<input type="text" name="command" class="input-box">&nbsp
+			<button class="submit-btn">移动</button>
+		</div>
+
+	</body>
+	<script type="text/javascript">
+	(function(){
+			//单例模式 下面为数据模型 Model
+			var square = function () {
+			//私有属性 位置 方向
+				var posx = 1;
+				var posy = 1;
+				var orientation = 90;//right
+
+				var go = function(){
+					switch (orientation) {
+						case 90://to right
+							if (posy<10) {
+								posy ++;
+							}
+							break;
+						case 180://to bottom
+							if (posx<10) {
+								posx ++;
+							}
+							break;
+						case 270://to left
+							if (posy>1) {
+								posy --;
+							}
+							break;
+						case 360://to up
+							if (posx>1) {
+								posx --;
+							}
+							break;
+						default:
+							console.log("没有这个方向");//试试try catch
+							break;
+					}
+				};
+				//左转
+				var turnLeft = function(){
+					if (orientation > 90) {
+						orientation -= 90;
+					}
+					else {
+						orientation = 360;
+					}
+				};
+				//右转
+				var turnRight = function(){
+					if (orientation < 360) {
+						orientation += 90;
+					}
+					else {
+						orientation = 90;
+					}
+				};
+				//后转
+				var turnBack = function(){
+					if(orientation > 180){
+						orientation -= 180;
+					}
+					else {
+						orientation +=180;
+					}
+				};
+
+				var command = function(_message){
+					switch (_message) {
+						case "GO":
+							go();
+							break;
+						case "TUN LEF":
+							turnLeft();
+							break;
+						case "TUN RIG":
+							turnRight();
+							break;
+						case "TUN BAC":
+							turnBack();
+							break;
+						default:
+							console.log('指令错误');
+							break;
+					}
+				};
+
+				//暴露出 action方法用来输入指令 和 position方法获得位置
+				return {
+					action:function(_msg){
+						command(_msg);
+						console.log("当前位置是:("+ posx + "," + posy + "),方向是:" + orientation + "。")						
+					},
+					position:function(){
+						return{
+							x:posx,
+							y:posy,
+							orientation:orientation
+						};						
+					}
+
+				};				
+		};
+
+		//下面为渲染DOM的方法 View
+
+		//渲染当前位置DOM 传入一个square对象
+		var renderCurrSquare = function(_square){
+
+			//获得当前位置DOM 传入一个square对象
+			var currSquare = $(".row:nth-child(" + _square.position().x + ")").find(">.col:nth-child("+ _square.position().y +")");
+			//之前要先清空样式！
+			$(".left,.right,.bottom,.top").remove();
+			$(".col").css({"background":""});
+
+			//红背景
+			currSquare.css({"background":"#fe0000"});
+
+			//蓝色块
+			switch (_square.position().orientation) {
+				case 90:
+					currSquare.append("<div class=\"right\ orientation\"></div>");
+					break;
+				case 180:
+					currSquare.append("<div class=\"bottom\ orientation\"></div>");
+					break;
+				case 270:
+					currSquare.append("<div class=\"left\ orientation\"></div>");
+					break;
+				case 360:
+					currSquare.append("<div class=\"top\ orientation\"></div>");
+					break;
+				default:
+					console.log("渲染方向出错");
+					break;
+			}
+			
+		};
+		//添加边框1234那些
+		var renderHeader = function(){
+			for (var i = 1; i <= 10; i++) {
+				$(".row:nth-child(1)>.col:nth-child("+ i +")").append("<div class=\"header-col\">"+i+"</div>");
+				$(".row:nth-child("+i+")>.col:nth-child(1)").append("<div class=\"header-row\">"+i+"</div>");
+			}			
+		};
+
+		//实例化 square 对象 square1
+		var square1 = square();
+		//加载时渲染初始位置和边界数字
+		renderCurrSquare(square1);
+		renderHeader();
+		//绑定input MVC之C
+		$(".submit-btn").on("click",function(){
+			square1.action($(".input-box").val());
+			renderCurrSquare(square1);
+			console.log($(".input-box").val());
+		});
+    	
+
+
+	})();
+	</script>
+</html>

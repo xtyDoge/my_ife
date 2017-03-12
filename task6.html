@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>任务6 UI浮出层</title>
+	<meta charset="utf-8">
+	<script src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script>
+	<style type="text/css" media="screen">
+		body{margin: 0px;}
+		.no-shade{position: absolute;top: 0px;bottom: 0px;right: 0px;left: 0px;background: #ec264a;}
+		.shade{position: absolute;top: 0px;bottom: 0px;right: 0px;left: 0px;background: #272822;opacity: 0.5;z-index: 1;}
+		.shade-box{position: fixed;left: 50%;top: 50%;width: 650px;height: 330px;background: #e6e6e6;margin-left: -326px;margin-top: -166px;z-index: 2;border:1px solid #8c8c8c;}
+		.shade-box-header{width: 100%;height: 50px;border: 1px solid #8c8c8c;box-sizing: border-box;background:#858585;color: #e6e6e6;font-size: 20px;line-height: 50px;text-align:left;padding-left: 20px;}
+		.shade-box>p{font-size: 20px;font-family: "Microsoft Yahei";margin-left: 20px;margin-top: 20px;}
+		.confirm,.cancel{height: 50px;width: 150px;display: block;border:1px solid #575757;position: absolute;bottom: 10px;font-size: 14px;color: #fff;background: #858585;}
+		.confirm{right: 170px;}
+		.cancel{right: 10px;}		
+	</style>
+</head>
+<body>
+	<div class="no-shade">
+		
+	</div>
+
+	<div class="shade" style="display:none">
+		<div class="shade-box">
+			<div class="shade-box-header">警告</div>	
+			<p>提交后不可更改，确认要继续吗？</p>
+			<button class="confirm">确定</button>
+			<button class="cancel">取消</button>
+		</div>
+	</div>
+
+</body>
+
+<script type="text/javascript">
+	(function () {
+		
+		var ShadeRender = function (_isShadeOn) {
+			if (_isShadeOn == true) {
+				$(".no-shade").hide();
+				$(".shade").show();
+			}
+			else{
+				$(".no-shade").show();
+				$(".shade").hide();
+			}
+		};
+
+		$(".no-shade").on("click",function () {
+			ShadeRender(true);
+		});
+		$(".shade").on("click",function () {
+			ShadeRender(false);
+		});
+	})();
+</script>
+</html>
